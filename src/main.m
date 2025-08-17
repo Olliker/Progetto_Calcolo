@@ -2,7 +2,7 @@
 clear; clc; close all;
 
 % Mesh per i nodi (scegli 1e4 o 1e5)
-Mmesh = 1e4;                      
+Mmesh = 1e5;                      
 xmesh = linspace(-1, 1, Mmesh).'; 
 deg_max = 50;                     
 xeval = linspace(-1, 1, 5000).';  
@@ -50,12 +50,16 @@ for d = 1:deg_max
 end
 
 % ---- Grafici ----
+scriptDir = fileparts(mfilename('fullpath'));
+imgDir = fullfile(scriptDir, '..', 'doc', 'img');
+if ~exist(imgDir,'dir'), mkdir(imgDir); end
+
 figure;
 plot(1:deg_max, times1, 'o-', 'DisplayName', 'DLP (produttoria)'); hold on;
 plot(1:deg_max, times2, 's-', 'DisplayName', 'DLP2 (LU Chebyshev)');
 xlabel('Grado d'); ylabel('Tempo [s]'); grid on; legend('Location','northwest');
 title(sprintf('Tempi computazionali (Mmesh=%d)', Mmesh));
-exportgraphics(gcf, 'tempi.png', 'Resolution', 300);
+exportgraphics(gcf, fullfile(imgDir,'tempi.png'), 'Resolution', 300);
 
 figure;
 semilogy(1:deg_max, Leb2, 's-', 'DisplayName', 'Leja (DLP2)'); hold on;
@@ -64,7 +68,7 @@ grid on;
 xlabel('Grado d'); ylabel('Costante di Lebesgue (semilog)');
 title('Costante di Lebesgue per nodi di Leja');
 legend('Location','northwest');
-exportgraphics(gcf, 'lebesgue.png', 'Resolution', 300);
+exportgraphics(gcf, fullfile(imgDir,'lebesgue.png'), 'Resolution', 300);
 
 figure;
 semilogy(1:deg_max, err_leja, 's-', 'DisplayName', 'Leja (DLP2)'); hold on;
@@ -72,6 +76,6 @@ semilogy(1:deg_max, err_equi, 'o-', 'DisplayName', 'Equispaziati'); grid on;
 xlabel('Grado d'); ylabel('Errore massimo su [-1,1]');
 title('Confronto accuratezza interpolante (base di Chebyshev)');
 legend('Location','southwest');
-exportgraphics(gcf, 'errori.png', 'Resolution', 300);
+exportgraphics(gcf, fullfile(imgDir,'errori.png'), 'Resolution', 300);
 
-fprintf('Figure salvate: tempi.png, lebesgue.png, errori.png\\n');
+fprintf('Figure salvate in %s: tempi.png, lebesgue.png, errori.png\n', imgDir);
